@@ -39,5 +39,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- The allowlist editor: reachable only through the launcher's smart list, never
+             from outside the app. All UI is built in code; no layout resource. -->
+        <activity
+            android:name=".AllowlistEditorActivity"
+            android:exported="false" />
     </application>
 </manifest>

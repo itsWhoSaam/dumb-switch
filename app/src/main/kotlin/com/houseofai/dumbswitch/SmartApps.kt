@@ -5,7 +5,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 
 /** One row of the smart list: what it shows and what a tap launches. */
-data class SmartApp(val label: String, val launchIntent: Intent)
+data class SmartApp(val label: String, val packageName: String, val launchIntent: Intent)
 
 /**
  * The smart list is every launchable app the manifest's targeted <queries> MAIN/LAUNCHER
@@ -41,6 +41,6 @@ class SmartAppsResolver(
         if (pkg == selfPackage) return null
         val launchIntent = packageManager.getLaunchIntentForPackage(pkg) ?: return null
         val label = info.loadLabel(packageManager)?.toString().orEmpty().ifEmpty { pkg }
-        return SmartApp(label = label, launchIntent = launchIntent)
+        return SmartApp(label = label, packageName = pkg, launchIntent = launchIntent)
     }
 }
