@@ -2,6 +2,7 @@ package com.houseofai.dumbswitch
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -25,6 +26,10 @@ class LauncherActivity : Activity() {
 
     private val modeRepository by lazy {
         ModeRepository(getSharedPreferences(PREFS_NAME, MODE_PRIVATE))
+    }
+
+    private val allowlistRepository by lazy {
+        PrefsAllowlistRepository(getSharedPreferences(ALLOWLIST_PREFS_NAME, MODE_PRIVATE))
     }
 
     private val tickHandler = Handler(Looper.getMainLooper())
@@ -96,7 +101,7 @@ class LauncherActivity : Activity() {
     private fun renderAllowlist() {
         val container = findViewById<LinearLayout>(R.id.allowlist)
         container.removeAllViews()
-        AllowlistResolver(packageManager).resolve().forEach { resolved ->
+        AllowlistResolver(packageManager).resolve(allowlistRepository.entries()).forEach { resolved ->
             container.addView(
                 TextView(this).apply {
                     text = resolved.label
@@ -113,6 +118,7 @@ class LauncherActivity : Activity() {
     private fun renderSmartList() {
         val container = findViewById<LinearLayout>(R.id.smart_list)
         container.removeAllViews()
+        renderSettingsRow(container)
         val apps = SmartAppsResolver(packageManager, packageName).resolve()
         if (apps.isEmpty()) {
             container.addView(
@@ -137,6 +143,25 @@ class LauncherActivity : Activity() {
                 },
             )
         }
+    }
+
+    /**
+     * The only door to configuration: the Settings row lives atop the smart list, so it appears
+     * exclusively while smart mode is active (spec — the dumb home never grows UI).
+     */
+    private fun renderSettingsRow(container: LinearLayout) {
+        container.addView(
+            TextView(this).apply {
+                text = SETTINGS_ROW
+                textSize = SMART_ROW_TEXT_SP
+                setTextColor(Color.WHITE)
+                gravity = Gravity.CENTER
+                setPadding(0, dp(SMART_ROW_PADDING_DP), 0, dp(SMART_ROW_PADDING_DP))
+                setOnClickListener {
+                    startActivity(Intent(this@LauncherActivity, AllowlistEditorActivity::class.java))
+                }
+            },
+        )
     }
 
     /** Long-press opens the confirm step; only confirming starts the escape (spec: no early cancel). */
@@ -175,6 +200,8 @@ class LauncherActivity : Activity() {
 
     private companion object {
         const val PREFS_NAME = "dumb_switch_mode"
+        const val ALLOWLIST_PREFS_NAME = "dumb_switch_allowlist"
+        const val SETTINGS_ROW = "Settings"
         const val TICK_INTERVAL_MS = 1000L
         const val SMART_BANNER_FORMAT = "Smart mode · %d:%02d"
         const val EXPIRED_BANNER = "Smart mode over — next home press returns to dumb mode"

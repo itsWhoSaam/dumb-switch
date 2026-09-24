@@ -16,3 +16,10 @@ First installable release: a replacement launcher for the Pixel 7 Pro that is du
 - **Home-role gate** — first run asks once (`ROLE_HOME`) to make Dumb Switch the default home.
 - **Launcher-only enforcement** — nothing is blocked at the OS level;
   Settings → Default apps is the by-design bypass.
+
+## 0.2.0 — Unreleased
+
+- **Allowlist editor** — a Settings row at the top of the smart list opens an editor where any
+  launchable app can be checked onto the dumb home. The list persists in SharedPreferences and
+  renders in saved order on the next home press; the v0 five remain the default until the first
+  save. Saving an empty list is rejected — the dumb home always keeps at least one app.
