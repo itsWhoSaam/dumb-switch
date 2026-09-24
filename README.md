@@ -5,10 +5,9 @@ five-app allowlist — **Phone, Messages, Maps, Camera, Clock** — so picking u
 the essentials instead of the feed. The friction design is the product: nothing is hidden at the
 OS level, and the Pixel Launcher stays installed as the escape hatch.
 
-This scaffold ships the **dumb home** (full-bleed clock + date + exactly the five allowlisted
-entries) and the **home-role gate** (first-run `ROLE_HOME` request). The timed smart-mode escape —
-a long-press-and-confirm 30-minute window into the full app list that decays back to dumb — is the
-next change.
+v0.1.0 ships the **dumb home** (full-bleed clock + date + exactly the five allowlisted entries),
+the **home-role gate** (first-run `ROLE_HOME` request), and the **timed smart-mode escape** — a
+long-press-and-confirm 30-minute window into the full app list that always decays back to dumb.
 
 ## Sideload
 
@@ -21,12 +20,25 @@ next change.
 4. **Set as home** — the first launch asks to make Dumb Switch the default home; the home chooser
    (press Home after install) also lists it. Accept once — it never re-prompts while the role is held.
 
-## Two-minute verification
+## Verify on device
 
-- Home screen shows the clock, the date, and exactly five entries.
-- Each entry opens the real app: Phone, Messages, Maps, Camera, Clock.
-- Settings → Apps → Default apps → *Home app* lists Dumb Switch; switching back to the Pixel
-  Launcher there is the by-design bypass (v0 is launcher-only enforcement).
+Two minutes with the APK sideloaded. In order:
+
+1. **Home chooser lists Dumb Switch.** Press Home after install; the chooser offers Dumb Switch
+   and the Pixel Launcher. Accept Dumb Switch (or answer the first-run role prompt) — it never
+   re-prompts while the role is held.
+2. **Dumb home is the default.** The screen shows the clock, the date, and exactly five entries —
+   Phone, Messages, Maps, Camera, Clock — and no drawer, search, or feed. Each entry opens the
+   real app.
+3. **Escape works.** Long-press "Smart mode", confirm in the dialog: the full app list appears
+   with a countdown banner ticking down from 30:00. The countdown cannot be cancelled early.
+4. **It decays back.** While smart mode is running, let the timer expire (or check the banner's
+   "Smart mode over" state). The running list stays until then; the **next home press** lands on
+   the dumb home again.
+
+By design (v0 is launcher-only): Settings → Apps → Default apps → *Home app* switches back to the
+Pixel Launcher, and non-allowlisted apps stay reachable from any other surface — v0 reshapes the
+default, it does not enforce at the OS level.
 
 ## Scope
 
