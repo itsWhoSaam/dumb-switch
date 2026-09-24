@@ -40,11 +40,24 @@ By design (v0 is launcher-only): Settings → Apps → Default apps → *Home ap
 Pixel Launcher, and non-allowlisted apps stay reachable from any other surface — v0 reshapes the
 default, it does not enforce at the OS level.
 
+## Overlay guard (v0.2, opt-in)
+
+Off by default. In smart mode, open **Settings** (top of the app list) and tap "Dumb mode guard —
+enable in Accessibility settings", then enable **Dumb mode guard** in the system list. Once
+enabled, any app outside the dumb home is covered by a black screen — clock, "Dumb mode", one
+**Home** button — while dumb mode is active. Smart mode covers nothing, and the service does
+nothing at all until you enable it.
+
+The guard is bypassable by design (findings log F2): it listens for window changes only, never
+reads screen content, and stays switch-off-able in system settings. Turning it off in
+Settings → Accessibility — or switching launchers, or disabling the app — removes the friction
+entirely. It raises the cost of the feed; it does not hide it.
+
 ## Scope
 
-v0 is launcher-only: no in-app content blocking, no notification (DND) changes, no uninstall
-protection, no allowlist editor. The stronger enforcement rungs — overlay blocker (v1) and
-device-owner lock task (v2) — are separate decisions.
+The allowlist is configurable in-app (v0.2), and the overlay guard is optional (above). Still
+out of scope: notification (DND) changes, uninstall protection, and device-owner lock task. The
+launcher reshapes the default; it does not enforce at the OS level.
 
 ## Toolchain
 
