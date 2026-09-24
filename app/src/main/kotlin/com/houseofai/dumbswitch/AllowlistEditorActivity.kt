@@ -1,6 +1,7 @@
 package com.houseofai.dumbswitch
 
 import android.app.Activity
+import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -26,6 +27,14 @@ class AllowlistEditorActivity : Activity() {
 
     private val allowlistRepository by lazy {
         PrefsAllowlistRepository(getSharedPreferences(PREFS_NAME, MODE_PRIVATE))
+    }
+
+    private val quietModeRepository by lazy {
+        QuietModeRepository(getSharedPreferences(QUIET_PREFS_NAME, MODE_PRIVATE))
+    }
+
+    private val notificationManager by lazy {
+        getSystemService(NotificationManager::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +97,7 @@ class AllowlistEditorActivity : Activity() {
                     gravity = Gravity.CENTER
                 },
             )
+            addView(buildQuietModeToggle())
             addView(
                 ScrollView(this@AllowlistEditorActivity).apply { addView(list) },
                 LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f),
@@ -131,9 +141,39 @@ class AllowlistEditorActivity : Activity() {
 
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
+    /**
+     * Quiet dumb mode consent (v0.2 spec, feature 3). Persists immediately on check — a toggle
+     * that waits for the allowlist Save button would surprise. Enabling needs the notification
+     * policy special-access grant: without it the user is sent to the grant screen and the
+     * checkbox reverts, so a persisted "on" never exists without the grant (a DND toggle that
+     * silently did nothing would be worse).
+     */
+    private fun buildQuietModeToggle(): View = CheckBox(this).apply {
+        text = QUIET_MODE_LABEL
+        textSize = QUIET_TEXT_SP
+        setTextColor(Color.WHITE)
+        isChecked = quietModeRepository.enabled()
+        setPadding(dp(ROW_PADDING_DP), dp(TITLE_TOP_PADDING_DP), 0, 0)
+        setOnCheckedChangeListener { _, checked ->
+            if (!checked) {
+                quietModeRepository.setEnabled(false)
+                return@setOnCheckedChangeListener
+            }
+            if (notificationManager.isNotificationPolicyAccessGranted) {
+                quietModeRepository.setEnabled(true)
+            } else {
+                isChecked = false
+                startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
+            }
+        }
+    }
+
     private companion object {
         const val PREFS_NAME = "dumb_switch_allowlist"
+        const val QUIET_PREFS_NAME = "dumb_switch_quiet"
         const val EDITOR_TITLE = "Home screen apps"
+        const val QUIET_MODE_LABEL = "Quiet dumb mode — silence notifications on the dumb home"
+        const val QUIET_TEXT_SP = 16f
         const val SAVE_ACTION = "Save"
         const val EMPTY_SAVE_MESSAGE = "Keep at least one app — the dumb home is never empty"
         const val TITLE_TEXT_SP = 28f

@@ -2,6 +2,7 @@ package com.houseofai.dumbswitch
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -30,6 +31,16 @@ class LauncherActivity : Activity() {
 
     private val allowlistRepository by lazy {
         PrefsAllowlistRepository(getSharedPreferences(ALLOWLIST_PREFS_NAME, MODE_PRIVATE))
+    }
+
+    private val quietModeRepository by lazy {
+        QuietModeRepository(getSharedPreferences(QUIET_PREFS_NAME, MODE_PRIVATE))
+    }
+
+    private val quietModeController by lazy {
+        QuietModeController(
+            NotificationDndController(getSystemService(NotificationManager::class.java)),
+        )
     }
 
     private val tickHandler = Handler(Looper.getMainLooper())
@@ -75,8 +86,14 @@ class LauncherActivity : Activity() {
     private fun renderCurrentMode() {
         stopBannerTicks()
         when (modeRepository.currentMode()) {
-            Mode.Dumb -> renderDumb()
-            is Mode.Smart -> renderSmart()
+            Mode.Dumb -> {
+                quietModeController.onDumbEntered(quietModeRepository.enabled())
+                renderDumb()
+            }
+            is Mode.Smart -> {
+                quietModeController.onSmartEntered()
+                renderSmart()
+            }
         }
     }
 
@@ -201,6 +218,7 @@ class LauncherActivity : Activity() {
     private companion object {
         const val PREFS_NAME = "dumb_switch_mode"
         const val ALLOWLIST_PREFS_NAME = "dumb_switch_allowlist"
+        const val QUIET_PREFS_NAME = "dumb_switch_quiet"
         const val SETTINGS_ROW = "Settings"
         const val TICK_INTERVAL_MS = 1000L
         const val SMART_BANNER_FORMAT = "Smart mode · %d:%02d"
