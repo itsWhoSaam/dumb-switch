@@ -32,4 +32,40 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:orientation="vertical" />
+
+    <!-- Dumb-mode escape hatch: long-press only, no click. Text set in Kotlin (all UI text lives
+         in code here, matching the scaffold). -->
+    <TextView
+        android:id="@+id/smart_mode_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:alpha="0.5"
+        android:gravity="center"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/smart_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/smart_list_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/smart_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp" />
+    </ScrollView>
 </LinearLayout>
