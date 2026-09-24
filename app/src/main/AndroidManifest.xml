@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Targeted package visibility: the MAIN/LAUNCHER intent sees every launchable app,
+         and the five package queries let the allowlist resolve labels and launch intents.
+         Deliberately no QUERY_ALL_PACKAGES. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <package android:name="com.google.android.dialer" />
+        <package android:name="com.google.android.apps.messaging" />
+        <package android:name="com.google.android.apps.maps" />
+        <package android:name="com.google.android.GoogleCamera" />
+        <package android:name="com.google.android.deskclock" />
+    </queries>
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="Dumb Switch"
+        android:theme="@style/Theme.DumbSwitch">
+
+        <activity
+            android:name=".LauncherActivity"
+            android:clearTaskOnLaunch="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true">
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- Also openable from the app drawer so the first-run ROLE_HOME gate is
+                 reachable after a sideload without requiring a home-press first. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
