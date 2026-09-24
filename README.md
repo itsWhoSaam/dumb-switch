@@ -20,6 +20,27 @@ long-press-and-confirm 30-minute window into the full app list that always decay
 4. **Set as home** — the first launch asks to make Dumb Switch the default home; the home chooser
    (press Home after install) also lists it. Accept once — it never re-prompts while the role is held.
 
+## Release installs
+
+Release APKs come from GitHub Releases: pushing a `v*` tag runs the release workflow,
+which builds a signed `app-release.apk` and publishes it with the matching CHANGELOG
+section. Available from v0.2.0.
+
+The release signature differs from the CI debug signature, so Android refuses to update a
+debug install in place — the first release install needs a **one-time uninstall of the
+debug build** first. The escape timestamp and the allowlist live in app data and reset
+with that uninstall; both are trivially reconfigured (let the escape decay, or open the
+editor in smart mode and save the list again).
+
+The keystore is committed with its password documented here — a conscious trade-off for
+a personal, sideload-only project: signature stability across machines and CI runs with
+zero secret plumbing, traded against anyone being able to build same-signature APKs. If
+the repo ever ships to Play or gains an audience, rotate to GitHub Actions secrets.
+
+- Keystore: `config/release.keystore`, alias `dumb-switch` (PKCS12, RSA 2048)
+- Password: `dumb-switch-release` — also stored in `gradle.properties` as
+  `RELEASE_STORE_PASSWORD`
+
 ## Verify on device
 
 Two minutes with the APK sideloaded. In order:
