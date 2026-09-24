@@ -5,7 +5,21 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+// Committed with the keystore on purpose — a personal, sideload-only project trades
+// secrecy for signature stability across machines and CI runs. See README "Release
+// installs"; rotate to CI secrets if distribution ever changes.
+val releaseStorePassword = project.property("RELEASE_STORE_PASSWORD") as String
+
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file("config/release.keystore")
+            storePassword = releaseStorePassword
+            keyAlias = "dumb-switch"
+            keyPassword = releaseStorePassword
+        }
+    }
+
     namespace = "com.houseofai.dumbswitch"
     compileSdk = 35
 
@@ -15,6 +29,14 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
+    }
+
+    buildTypes {
+        release {
+            // Minification stays off — the APK is tiny and R8 buys nothing here.
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+        }
     }
 
     compileOptions {
