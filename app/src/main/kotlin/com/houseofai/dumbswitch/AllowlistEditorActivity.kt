@@ -1,8 +1,10 @@
 package com.houseofai.dumbswitch
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import android.widget.CheckBox
@@ -90,6 +92,20 @@ class AllowlistEditorActivity : Activity() {
                 ScrollView(this@AllowlistEditorActivity).apply { addView(list) },
                 LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f),
             )
+            addView(
+                TextView(this@AllowlistEditorActivity).apply {
+                    text = GUARD_ROW
+                    textSize = GUARD_ROW_TEXT_SP
+                    setTextColor(GUARD_ROW_COLOR)
+                    gravity = Gravity.CENTER
+                    setPadding(0, dp(GUARD_ROW_TOP_PADDING_DP), 0, 0)
+                    // The system exposes no per-service deep link, so this opens the
+                    // Accessibility list; the row names the service label to look for.
+                    setOnClickListener {
+                        startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                    }
+                },
+            )
             addView(status)
             addView(
                 TextView(this@AllowlistEditorActivity).apply {
@@ -129,6 +145,10 @@ class AllowlistEditorActivity : Activity() {
         const val ROW_PADDING_DP = 14
         const val STATUS_PADDING_DP = 16
         const val SAVE_PADDING_DP = 24
+        const val GUARD_ROW = "Dumb mode guard — enable in Accessibility settings"
+        const val GUARD_ROW_TEXT_SP = 16f
+        const val GUARD_ROW_TOP_PADDING_DP = 28
         val STATUS_COLOR = 0x66FFFFFF.toInt()
+        val GUARD_ROW_COLOR = 0xB3FFFFFF.toInt()
     }
 }

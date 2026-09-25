@@ -47,3 +47,7 @@ First installable release: a replacement launcher for the Pixel 7 Pro that is du
   launchable app can be checked onto the dumb home. The list persists in SharedPreferences and
   renders in saved order on the next home press; the v0 five remain the default until the first
   save. Saving an empty list is rejected — the dumb home always keeps at least one app.
+- **Overlay guard (opt-in)** — once "Dumb mode guard" is enabled in Android's Accessibility
+  settings, non-allowlisted apps are covered by a black dumb-home screen (clock, "Dumb mode",
+  one Home button) while dumb mode is active. Smart mode covers nothing, and the guard is
+  bypassable by design — it raises the cost of the feed, it does not hide it.

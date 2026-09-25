@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Overlay guard config (v0.2 spec, feature 2): window-state changes only, never window
+     content. The guard decides from package names alone — canRetrieveWindowContent is
+     deliberately false, and the event mask is deliberately narrow. -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault"
+    android:canRetrieveWindowContent="false"
+    android:description="@string/dumb_guard_description"
+    android:notificationTimeout="100" />

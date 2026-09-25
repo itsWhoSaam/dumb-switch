@@ -45,5 +45,22 @@
         <activity
             android:name=".AllowlistEditorActivity"
             android:exported="false" />
+
+        <!-- The overlay guard (v0.2 spec, feature 2): installed disabled, and enabled only by
+             the user in Settings → Accessibility — the consent gate. exported=true is the
+             documented shape for accessibility services; the BIND_ACCESSIBILITY_SERVICE
+             permission means only the system can bind it. -->
+        <service
+            android:name=".DumbGuardService"
+            android:exported="true"
+            android:label="@string/dumb_guard_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/dumb_guard_config" />
+        </service>
     </application>
 </manifest>
