@@ -51,3 +51,7 @@ First installable release: a replacement launcher for the Pixel 7 Pro that is du
   settings, non-allowlisted apps are covered by a black dumb-home screen (clock, "Dumb mode",
   one Home button) while dumb mode is active. Smart mode covers nothing, and the guard is
   bypassable by design — it raises the cost of the feed, it does not hide it.
+- **Quiet dumb mode (opt-in)** — a toggle in the same settings surface, default off. When on,
+  landing on the dumb home applies the priority interruption filter, and entering smart mode
+  restores the filter captured before muting — never a blind reset, so a DND you set yourself
+  survives. Needs the one-time notification-policy special-access grant from the toggle.

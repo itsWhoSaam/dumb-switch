@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Quiet dumb mode (v0.2 spec, feature 3). Declared here, but ACCESS_NOTIFICATION_POLICY is
+         a special access: applying the filter also needs the user to grant notification policy
+         access (Settings opens from the editor toggle when missing). -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
     <!-- Targeted package visibility: the MAIN/LAUNCHER intent sees every launchable app,
          and the five package queries let the allowlist resolve labels and launch intents.
          Deliberately no QUERY_ALL_PACKAGES. -->
